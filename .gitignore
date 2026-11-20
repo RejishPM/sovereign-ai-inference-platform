@@ -1,0 +1,51 @@
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*credentials*
+*secret*.yaml
+*secret*.json
+gateway-key
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.backup
+*.backup.*
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Local environments
+.idea/
+.vscode/
+.DS_Store
+
+# Model caches and large files
+.cache/
+models/
+*.safetensors
+*.gguf
+*.bin
+
+# Kubernetes and local state
+kubeconfig
+.kube/
+terraform.tfstate*
+*.tfvars
+
+# Generated Helm reference output
+router-default-values.yaml
+router-fast-rendered.yaml

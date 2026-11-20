@@ -1,0 +1,40 @@
+{
+  "uid": "sovereign-vllm-cpu",
+  "title": "Sovereign AI | vLLM CPU Inference",
+  "tags": ["vllm", "llm-d", "sovereign-ai"],
+  "schemaVersion": 39,
+  "refresh": "30s",
+  "time": {"from": "now-30m", "to": "now"},
+  "panels": [
+    {
+      "id": 1,
+      "title": "Generated Tokens / Second",
+      "type": "timeseries",
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "targets": [{"expr": "sum(rate(vllm:generation_tokens_total[2m]))", "refId": "A"}]
+    },
+    {
+      "id": 2,
+      "title": "Prompt Tokens / Second",
+      "type": "timeseries",
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+      "targets": [{"expr": "sum(rate(vllm:prompt_tokens_total[2m]))", "refId": "A"}]
+    },
+    {
+      "id": 3,
+      "title": "KV Cache Utilization (%)",
+      "type": "timeseries",
+      "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+      "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100}},
+      "targets": [{"expr": "vllm:kv_cache_usage_perc * 100", "refId": "A"}]
+    },
+    {
+      "id": 4,
+      "title": "P95 Time to First Token",
+      "type": "timeseries",
+      "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+      "fieldConfig": {"defaults": {"unit": "s"}},
+      "targets": [{"expr": "histogram_quantile(0.95, sum by (le) (rate(vllm:time_to_first_token_seconds_bucket[5m])))", "refId": "A"}]
+    }
+  ]
+}

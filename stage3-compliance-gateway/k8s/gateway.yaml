@@ -1,0 +1,59 @@
+# CPU-lab deployment: runtime pip install to avoid installing Docker/building images on the VM.
+# For production, build the accompanying Dockerfile and pin an image digest instead.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compliance-gateway
+  namespace: inference
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: compliance-gateway
+  template:
+    metadata:
+      labels:
+        app: compliance-gateway
+    spec:
+      containers:
+        - name: gateway
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - 'pip install --no-cache-dir -r /src/requirements.txt && cd /src && exec uvicorn main:app --host 0.0.0.0 --port 8000'
+          env:
+            - name: GATEWAY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gateway-secrets
+                  key: GATEWAY_API_KEY
+          ports:
+            - name: http
+              containerPort: 8000
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: 500m, memory: 384Mi}
+          readinessProbe:
+            httpGet: {path: /healthz, port: 8000}
+            periodSeconds: 5
+          volumeMounts:
+            - name: source
+              mountPath: /src
+              readOnly: true
+      volumes:
+        - name: source
+          configMap:
+            name: compliance-gateway-code
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compliance-gateway
+  namespace: inference
+spec:
+  type: ClusterIP
+  selector:
+    app: compliance-gateway
+  ports:
+    - {name: http, port: 8000, targetPort: http}

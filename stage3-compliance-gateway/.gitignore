@@ -1,0 +1,8 @@
+.env
+.env.*
+*.key
+*.pem
+*audit*.jsonl
+__pycache__/
+.venv/
+evidence/private/
