@@ -88,7 +88,7 @@ async def infer(request: Request,
     payload = {'model':model, 'messages':clean_messages, 'max_tokens':max_tokens}
     started = time.perf_counter()
     try:
-        async with httpx.AsyncClient(timeout=180.0, trust_env=False) as client:
+        async with httpx.AsyncClient(timeout=320.0, trust_env=False) as client:
             upstream = await client.post(target + '/v1/chat/completions', json=payload, headers={'X-Request-ID':request_id})
     except httpx.RequestError:
         log_event(request_id, 'UPSTREAM_ERROR', 502, scenario, pii_redactions=pii_count)
