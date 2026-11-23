@@ -1,7 +1,7 @@
 router:
   modelServers:
     matchLabels:
-      app: sim-reasoning
+      app: vllm-fast-qwen
 
   proxy:
     enabled: true
