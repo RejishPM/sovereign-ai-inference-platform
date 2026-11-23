@@ -16,7 +16,7 @@ audit = logging.getLogger('gateway.audit')
 app = FastAPI(title='Sovereign AI Inference Gateway (PoC)', version='0.2.0')
 ROUTES = {
     'fast': (os.getenv('ROUTER_FAST_URL', 'http://router-fast-epp.inference.svc.cluster.local:8081'), 'Qwen/Qwen2.5-0.5B-Instruct'),
-    'reasoning': (os.getenv('ROUTER_REASONING_URL', 'http://router-reasoning-epp.inference.svc.cluster.local:8081'), 'Qwen2.5-0.5B'),
+    'reasoning': (os.getenv('ROUTER_REASONING_URL', 'http://router-reasoning-epp.inference.svc.cluster.local:8081'), 'Qwen/Qwen2.5-0.5B-Instruct'),
 }
 PATTERNS = [
     (re.compile(r'\b\d{3}-\d{2}-\d{4}\b'), '[REDACTED_SSN]'),
