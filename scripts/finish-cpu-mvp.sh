@@ -21,7 +21,7 @@ echo "Backup recorded locally: $backup (restore from source manifests, not this 
 
 # Within gateway container. No secrets or full request bodies printed.
 kubectl -n "$NS" exec -i deploy/compliance-gateway -- python - <<'PY'
-import os,sys,httpx
+import os,sys,httpx,re
 sys.path.insert(0,"/src")
 from main import ROUTES,redact
 model="Qwen/Qwen2.5-0.5B-Instruct"
@@ -37,10 +37,28 @@ with httpx.Client(timeout=320,trust_env=False) as c:
  r=send(c,"fast","Say hello.")
  assert r.status_code==200, f"Warmup failed {r.status_code}"
  print("PASS warmup",flush=True)
+ def successes():
+  response=c.get("http://vllm-fast-qwen:8000/metrics", timeout=20)
+  response.raise_for_status()
+  values=[]
+  for line in response.text.splitlines():
+   if not line or line.startswith("#"): continue
+   parts=line.split()
+   if len(parts)<2: continue
+   name=parts[0].split("{",1)[0]
+   if "request_success" in name and not name.endswith("_created"):
+    try: values.append(float(parts[-1]))
+    except ValueError: pass
+  assert values, "No real vLLM request_success counter"
+  return sum(values)
+ before=successes()
  for s in ("fast","reasoning"):
   r=send(c,s,"Say hello.")
   assert r.status_code==200 and r.json().get("choices"), f"Failed {s}: {r.status_code}"
   print("PASS gateway scenario",s,flush=True)
+ after=successes()
+ assert after-before>=2, f"vLLM success counter changed by {after-before}, expected >=2"
+ print("PASS real vLLM requests incremented by at least 2",flush=True)
  assert send(c,"fast","Hi",auth="invalid-test-key").status_code==401
  print("PASS 401",flush=True)
  assert send(c,"invalid","Hi").status_code==400
