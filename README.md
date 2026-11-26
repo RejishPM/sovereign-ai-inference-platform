@@ -1,5 +1,14 @@
 # Sovereign AI Inference Platform
 
+> [!IMPORTANT]
+> **Experimental repository — development paused. Not production-ready or verified for fresh installation.**
+>
+> This project was developed with assistance from large language models (LLMs), along with hands-on troubleshooting and functional validation on one existing GCP k3s VM. The code and deployment instructions may contain mistakes, incompatibilities, or missing steps. **A clean installation on a new VM has not been tested.** Do not execute commands or expose services without reviewing them against current official documentation, checking costs and credentials, and testing in an isolated environment. An AI assistant may help debug errors, but its suggestions require independent verification.
+>
+> **Verified:** CPU-based Qwen inference with vLLM; FastAPI gateway checks; request forwarding through Envoy/llm-d; Prometheus scraping of vLLM metrics on the existing VM.
+>
+> **Not demonstrated:** two-GPU serving, cache-aware scheduling benefits across real replicas, production security/regulatory compliance, and clean-VM reproducibility. GPU quota requests were not approved, so the GPU milestone is postponed. Contributions and corrections are welcome.
+
 CPU-first engineering proof of concept for private LLM serving, scenario routing, gateway policy checks, Kubernetes, and observability. **GPU multi-replica intelligent routing is the next milestone, not yet implemented.**
 
 ## Verified CPU architecture
