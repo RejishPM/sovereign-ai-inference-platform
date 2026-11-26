@@ -47,6 +47,18 @@ The following observations were reported from the running GCP deployment:
 
 These are functional acceptance results, not comparative performance results or production certification. Prometheus instant-query and Grafana dashboard values should be captured as separate final evidence if not already recorded.
 
+## Installation and reproducibility
+
+**[CPU VM installation and validation guide](docs/INSTALL_CPU.md)** — includes environment prerequisites, an existing-cluster workflow, a conditional fresh-VM workflow, verification commands and evidence boundaries. A fresh installation from scratch has **not yet** been independently reproduced; chart/CRD compatibility and exact version pins remain to be verified.
+
+For an existing deployment, the read-only health check is:
+
+```bash
+bash scripts/verify-cpu-platform.sh
+```
+
+It checks Kubernetes resource health and pool selectors but does **not** establish end-to-end inference success. The full acceptance script is documented in the guide.
+
 ## Repository layout
 
 - `deploy/k8s/vllm-fast-qwen.yaml` — actual CPU serving Deployment and Service
